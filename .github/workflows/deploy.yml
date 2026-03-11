@@ -1,0 +1,67 @@
+# GitHub Actions: GitHub Pagesデプロイワークフロー
+#
+# 【動作】
+# - mainブランチへのプッシュ時に自動実行
+# - Reactアプリをビルドしてdistフォルダに出力
+# - GitHub Pagesにデプロイ
+#
+# 【セットアップ手順】
+# 1. GitHubリポジトリの Settings → Pages を開く
+# 2. Source を "GitHub Actions" に変更
+# 3. このファイルをリポジトリにプッシュ
+
+name: GitHub Pagesデプロイ
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Node.jsのセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: pnpmのセットアップ
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: 依存関係をインストール
+        run: pnpm install
+
+      - name: ビルド
+        run: pnpm run build
+        env:
+          VITE_APP_TITLE: まつモン - 放置少女攻略サイト
+
+      - name: GitHub Pagesのセットアップ
+        uses: actions/configure-pages@v4
+
+      - name: アーティファクトをアップロード
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist/public'
+
+      - name: GitHub Pagesにデプロイ
+        id: deployment
+        uses: actions/deploy-pages@v4

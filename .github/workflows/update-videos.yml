@@ -1,0 +1,91 @@
+# GitHub Actions: YouTube動画自動更新ワークフロー
+#
+# 【動作】
+# - 毎日午前6時（JST）に自動実行
+# - YouTube APIから最新動画・人気動画を取得
+# - public/videos.json を更新してコミット
+# - GitHub Pagesに自動デプロイ
+#
+# 【セットアップ手順】
+# 1. YouTube Data API v3のAPIキーを取得
+#    → https://console.cloud.google.com/
+# 2. GitHubリポジトリの Settings → Secrets → Actions に追加
+#    - YOUTUBE_API_KEY: APIキー
+#    - YOUTUBE_CHANNEL_ID: チャンネルID（UCで始まるID）
+# 3. このファイルをリポジトリにプッシュ
+
+name: YouTube動画自動更新
+
+on:
+  schedule:
+    # 毎日21:00 UTC = 翌日06:00 JST
+    - cron: '0 21 * * *'
+  workflow_dispatch: # 手動実行も可能
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  update-videos:
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Node.jsのセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: YouTube動画データを更新
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          YOUTUBE_CHANNEL_ID: ${{ secrets.YOUTUBE_CHANNEL_ID }}
+        run: node scripts/update-videos.js
+
+      - name: 変更をコミット・プッシュ
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add client/public/videos.json
+          git diff --staged --quiet || git commit -m "chore: YouTube動画データを自動更新 [$(date '+%Y-%m-%d')]"
+          git push
+
+  # GitHub Pagesへのデプロイ（動画更新後）
+  deploy:
+    needs: update-videos
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+        with:
+          ref: main # 最新のコミットを取得
+
+      - name: Node.jsのセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 依存関係をインストール
+        run: npm ci
+
+      - name: ビルド
+        run: npm run build
+
+      - name: GitHub Pagesのセットアップ
+        uses: actions/configure-pages@v4
+
+      - name: アーティファクトをアップロード
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist'
+
+      - name: GitHub Pagesにデプロイ
+        id: deployment
+        uses: actions/deploy-pages@v4

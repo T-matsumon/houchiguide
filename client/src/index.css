@@ -1,0 +1,262 @@
+/*
+ * Design Philosophy: 「煌夜の宮廷」 - 和風ダーク・ゴールド
+ * Design Movement: 江戸時代の蒔絵 × ダークファンタジーRPG UI
+ * Color Palette: 深藍(#0A0E1A) × 金箔(#C9A84C) × 朱色(#C0392B) × 象牙白(#F5F0E8)
+ * Typography: Noto Serif JP (見出し) + Noto Sans JP (本文) + Cinzel (英数字)
+ */
+
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-gold: var(--gold);
+  --color-crimson: var(--crimson);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+}
+
+:root {
+  --radius: 0.4rem;
+  /* 深藍の背景 */
+  --background: oklch(0.1 0.025 265);
+  --foreground: oklch(0.93 0.015 80);
+  /* カード: 少し明るい深藍 */
+  --card: oklch(0.14 0.025 265);
+  --card-foreground: oklch(0.93 0.015 80);
+  --popover: oklch(0.14 0.025 265);
+  --popover-foreground: oklch(0.93 0.015 80);
+  /* 金箔プライマリ */
+  --primary: oklch(0.72 0.12 75);
+  --primary-foreground: oklch(0.1 0.025 265);
+  /* セカンダリ */
+  --secondary: oklch(0.18 0.025 265);
+  --secondary-foreground: oklch(0.85 0.015 80);
+  --muted: oklch(0.18 0.02 265);
+  --muted-foreground: oklch(0.6 0.02 80);
+  /* 朱色アクセント */
+  --accent: oklch(0.48 0.18 25);
+  --accent-foreground: oklch(0.95 0.01 80);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0 0);
+  /* ボーダー: 金色の薄いライン */
+  --border: oklch(0.72 0.12 75 / 0.25);
+  --input: oklch(0.72 0.12 75 / 0.2);
+  --ring: oklch(0.72 0.12 75 / 0.5);
+  /* カスタムカラー */
+  --gold: oklch(0.72 0.12 75);
+  --crimson: oklch(0.48 0.18 25);
+  --chart-1: oklch(0.72 0.12 75);
+  --chart-2: oklch(0.6 0.15 25);
+  --chart-3: oklch(0.5 0.12 265);
+  --chart-4: oklch(0.65 0.1 150);
+  --chart-5: oklch(0.55 0.08 80);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Noto Serif JP', serif;
+  }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [type="button"]:not(:disabled),
+  [type="submit"]:not(:disabled),
+  [type="reset"]:not(:disabled),
+  a[href],
+  select:not(:disabled),
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled) {
+    @apply cursor-pointer;
+  }
+}
+
+@layer components {
+  .container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .flex {
+    min-height: 0;
+    min-width: 0;
+  }
+
+  @media (min-width: 640px) {
+    .container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container {
+      padding-left: 2rem;
+      padding-right: 2rem;
+      max-width: 1280px;
+    }
+  }
+
+  /* 金縁カード */
+  .gold-card {
+    background: oklch(0.14 0.025 265 / 0.9);
+    border: 1px solid oklch(0.72 0.12 75 / 0.3);
+    border-top: 2px solid oklch(0.72 0.12 75 / 0.7);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+  }
+  .gold-card:hover {
+    border-color: oklch(0.72 0.12 75 / 0.6);
+    box-shadow: 0 0 20px oklch(0.72 0.12 75 / 0.15), 0 4px 24px oklch(0 0 0 / 0.4);
+    transform: translateY(-3px);
+  }
+
+  /* 金色グロータイトル */
+  .gold-title {
+    color: oklch(0.72 0.12 75);
+    font-family: 'Noto Serif JP', serif;
+    text-shadow: 0 0 20px oklch(0.72 0.12 75 / 0.4);
+  }
+
+  /* 朱色アクセントライン */
+  .crimson-line {
+    background: linear-gradient(90deg, oklch(0.48 0.18 25), oklch(0.72 0.12 75), oklch(0.48 0.18 25));
+    height: 2px;
+  }
+
+  /* セクション見出し */
+  .section-title {
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 700;
+    color: oklch(0.72 0.12 75);
+    position: relative;
+    display: inline-block;
+    padding-bottom: 0.5rem;
+  }
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, oklch(0.48 0.18 25), oklch(0.72 0.12 75));
+  }
+
+  /* 和柄背景オーバーレイ */
+  .pattern-overlay {
+    background-image: url("https://d2xsxph8kpxj0f.cloudfront.net/310519663420667682/njxy9ShpxNx4dSZTfXTzoo/section-bg-pattern-94BUW4mqtmvEQBSH37XW8M.webp");
+    background-size: cover;
+    background-position: center;
+  }
+
+  /* フェードインアニメーション */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .fade-in-up {
+    animation: fadeInUp 0.6s ease forwards;
+  }
+
+  /* 桜の花びらアニメーション */
+  @keyframes sakuraFall {
+    0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* グロウパルス */
+  @keyframes goldPulse {
+    0%, 100% { box-shadow: 0 0 10px oklch(0.72 0.12 75 / 0.3); }
+    50% { box-shadow: 0 0 25px oklch(0.72 0.12 75 / 0.6); }
+  }
+  .gold-pulse {
+    animation: goldPulse 2s ease-in-out infinite;
+  }
+
+  /* YouTube動画カード */
+  .video-card {
+    background: oklch(0.14 0.025 265 / 0.95);
+    border: 1px solid oklch(0.72 0.12 75 / 0.25);
+    border-radius: 0.4rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  .video-card:hover {
+    border-color: oklch(0.72 0.12 75 / 0.5);
+    box-shadow: 0 0 20px oklch(0.72 0.12 75 / 0.2), 0 8px 32px oklch(0 0 0 / 0.5);
+    transform: translateY(-4px);
+  }
+
+  /* ナビゲーションリンク */
+  .nav-link {
+    position: relative;
+    color: oklch(0.85 0.015 80);
+    font-family: 'Noto Sans JP', sans-serif;
+    transition: color 0.2s ease;
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: oklch(0.72 0.12 75);
+    transition: width 0.3s ease;
+  }
+  .nav-link:hover {
+    color: oklch(0.72 0.12 75);
+  }
+  .nav-link:hover::after {
+    width: 100%;
+  }
+  .nav-link.active {
+    color: oklch(0.72 0.12 75);
+  }
+  .nav-link.active::after {
+    width: 100%;
+  }
+}
