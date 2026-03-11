@@ -49,6 +49,10 @@ jobs:
       - name: pnpmのセットアップ
         uses: pnpm/action-setup@v4
 
+      - name: pnpm キャッシュをクリア
+        run: pnpm store prune
+
+
       - name: 依存関係をインストール
         run: pnpm install
 
