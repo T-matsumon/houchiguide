@@ -15,9 +15,10 @@
  * 3. または https://commentpicker.com/youtube-channel-id.php で取得
  */
 
-const https = require('https');
-const fs = require('fs');
-const path = require('path');
+import https from 'https';
+import fs from 'fs';
+import path from 'path';
+
 
 const API_KEY = process.env.YOUTUBE_API_KEY;
 const CHANNEL_ID = process.env.YOUTUBE_CHANNEL_ID || 'UCxxxxxxxxxxxxxxxxxxxxxxxx'; // ← 実際のチャンネルIDに変更
