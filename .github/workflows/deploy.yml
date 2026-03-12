@@ -40,7 +40,6 @@ jobs:
       - name: リポジトリをチェックアウト
         uses: actions/checkout@v4
 
-
       - name: Node.jsのセットアップ
         uses: actions/setup-node@v4
         with:
@@ -51,7 +50,6 @@ jobs:
 
       - name: pnpm キャッシュをクリア
         run: pnpm store prune
-
 
       - name: 依存関係をインストール
         run: pnpm install
