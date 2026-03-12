@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Redirecting...</title>
+    <script>
+        // GitHub Pages SPA redirect
+        const path = window.location.pathname;
+        const segments = path.split('/').filter(Boolean);
+        
+        if (segments[0] !== 'houchiguide') {
+            window.location.href = '/houchiguide/';
+        } else {
+            window.location.href = '/houchiguide/';
+        }
+    </script>
+</head>
+<body>
+</body>
+</html>
